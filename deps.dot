@@ -1,0 +1,60 @@
+/* dependencies between different Type Classes */
+/* vim: set tw=76 ts=4 et : */
+digraph TypeClasses {
+
+    node [shape="box"];
+    node [color="#c00000"];
+    Functor;
+    Pointed;
+    Comonad;
+    Applicative;
+    Monoid;
+    Category;
+    Alternative;
+    Foldable;
+    Arrow;
+    ArrowZero;
+    ArrowPlus;
+    Traversable;
+    MonadFix;
+    MonadPlus;
+    ArrowChoice;
+    ArrowLoop;
+    Monad;
+    ArrowApply;
+    node [color="black"];
+
+    Functor -> Pointed;
+    Functor -> Comonad;
+    Functor -> Traversable;
+
+    Pointed -> Applicative;
+
+    Applicative -> Alternative;
+    Applicative -> Monad;
+    Applicative -> Traversable [style="dotted"];
+
+    Monad -> MonadFix;
+    Monad -> MonadPlus;
+    Monad -> ArrowApply [dir="both",penwidth=3.0,constraint="false"];
+
+    Category -> Arrow;
+
+    Arrow -> ArrowZero;
+    Arrow -> ArrowApply;
+    Arrow -> ArrowChoice;
+    Arrow -> ArrowLoop;
+
+    ArrowZero -> ArrowPlus;
+
+    Foldable -> Traversable;
+
+    edge [style="dotted"];
+
+    Monoid -> Alternative;
+    Monoid -> Foldable;
+    Monoid -> Monad;
+    Monoid -> MonadPlus;
+    Monoid -> ArrowPlus;
+
+}
