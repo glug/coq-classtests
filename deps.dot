@@ -3,9 +3,7 @@
 digraph TypeClasses {
 
     node [shape="box"];
-    node [color="#c00000"];
-    Functor;
-    Pointed;
+    node [color="#ff0000"];
     Comonad;
     Applicative;
     Monoid;
@@ -22,7 +20,10 @@ digraph TypeClasses {
     ArrowLoop;
     Monad;
     ArrowApply;
+    node [color="#800000"];
+    Pointed;
     node [color="black"];
+    Functor;
 
     Functor -> Pointed;
     Functor -> Comonad;

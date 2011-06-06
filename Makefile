@@ -1,13 +1,13 @@
 .PHONY: all clean allcoq coq.html coq.pdf
 
-CLASSES := Category
-Vm := Init $(CLASSES:%=Classes/%)
+CLASSES := Functor Pointed
+Vm := $(CLASSES:%=Classes/%)
 Vs := $(Vm:%=%.v)
 
 all: allcoq
 
 Makefile.coq: Makefile $(Vs)
-	coq_makefile $(Vs) -o Makefile.coq
+	coq_makefile -R Classes Classes $(Vs) -o Makefile.coq
 
 allcoq: Makefile.coq $(Vs)
 	make -f Makefile.coq all
