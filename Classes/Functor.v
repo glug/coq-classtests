@@ -1,4 +1,4 @@
-(* Functor -- Functor Type Class  *)
+(** * Functor -- Functor Type Class  **)
 (* vim: set tw=78 ts=2 et syn=coq fdm=marker fmr={{{,}}} : *)
 
 Require Import Coq.Lists.List.

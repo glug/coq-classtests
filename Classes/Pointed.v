@@ -1,4 +1,4 @@
-(* Pointed -- Pointed Functor Type Class *)
+(** * Pointed -- Pointed Functor Type Class **)
 (* vim: set tw=78 ts=2 et syn=coq fdm=marker fmr={{{,}}} : *)
 
 Require Import Classes.Functor.
@@ -7,8 +7,6 @@ Require Import Classes.Functor.
 
 Class Pointed {F : Type -> Type} (FUNCTOR : Functor F) :=
     {   pure : forall {a : Type}, a -> F a
-    ;   fmap : forall {a b : Type} (f : a -> b), F a -> F b
-             := @fmap F FUNCTOR
 (** free theorem: this cannot be false
 [[
     ;   pointed_fmap : forall {a b : Type} (g : a -> b) (x : a),
@@ -38,10 +36,12 @@ Instance listPointed : Pointed listFunctor :=
     }.
 
 (** * Usage Example
-[[
- Definition foo {F FUN} (P : @Pointed F FUN) := fmap (plus 1) (pure 3).
- Eval compute in foo listPointed.
+[[*)
+ Definition foo {F} {FP : Functor F} (P : Pointed FP) := fmap (plus 1) (pure 3).
+ Eval compute in foo listPointed. (* -> [4] *)
+ Eval compute in foo (funPointed bool). (* -> fun (_ : bool) -> 4 *)
 
+(*
  -> [4]
 ]]
 **)
