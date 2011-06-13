@@ -5,8 +5,8 @@ digraph TypeClasses {
     node [shape="box"];
     /* missing */
     node [color="#ff0000"];
+    ArrowApply;
     Comonad;
-    Monoid;
     Alternative;
     Foldable;
     Arrow;
@@ -17,16 +17,16 @@ digraph TypeClasses {
     MonadPlus;
     ArrowChoice;
     ArrowLoop;
-    ArrowApply;
     /* partially done */
     node [color="#800000"];
     Category;
-    Pointed;
-    Applicative;
-    Monad;
     /* done */
     node [color="black"];
+    Applicative;
     Functor;
+    Monad;
+    Monoid;
+    Pointed;
 
     /* deps */
     Functor -> Pointed;

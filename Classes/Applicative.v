@@ -4,6 +4,7 @@
 Require Import Coq.Lists.List.
 
 Require Import Classes.Cat.
+Require Import Classes.Monoid.
 Require Import Classes.Functor.
 Require Import Classes.Pointed.
 
@@ -78,8 +79,78 @@ Proof.
   reflexivity.
   reflexivity.
   reflexivity.
-Qed.
+Defined.
 
-(* TODO sum, prod need monoid *)
+Instance sumLeftApplicative : forall {R}, Applicative (fun L => sum L R) :=
+    {   fapp := fun _ _ tf tx =>
+                  match tf with
+                  | inl f =>
+                    match tx with
+                    | inl x => inl (f x)
+                    | inr v => inr v
+                    end
+                  | inr v => inr v
+                  end
+    }.
+Proof.
+  destruct 0; reflexivity.
+  reflexivity.
+  intros a b c u; destruct u; try reflexivity;
+    intro v; destruct v; try reflexivity;
+    intro w; destruct w; reflexivity.
+  reflexivity.
+Defined.
 
+Instance sumRightApplicative : forall {L}, Applicative (sum L) :=
+    {   fapp := fun _ _ tf tx =>
+                  match tf with
+                  | inr f =>
+                    match tx with
+                    | inr x => inr (f x)
+                    | inl v => inl v
+                    end
+                  | inl v => inl v
+                  end
+    }.
+Proof.
+  destruct 0; reflexivity.
+  reflexivity.
+  intros a b c u; destruct u; try reflexivity;
+    intro v; destruct v; try reflexivity;
+    intro w; destruct w; reflexivity.
+  reflexivity.
+Defined.
 
+Instance prodLeftApplicative : forall {R} {M : Monoid R}, Applicative (fun L => prod L R) :=
+    {   fapp := fun _ _ tf tx =>
+                  match tf with
+                  | (f, rf) =>
+                    match tx with
+                    | (x, rx) => (f x, add rf rx)
+                    end
+                  end
+    }.
+Proof.
+  simpl; intros a x; destruct x; rewrite monoid_e_l; reflexivity.
+  simpl; intros; rewrite monoid_e_l; reflexivity.
+  simpl; intros a b c u v w; destruct u; destruct v; destruct w;
+    rewrite monoid_e_l; rewrite monoid_assoc; reflexivity.
+  simpl; intros a b g x; destruct x; rewrite monoid_e_l; reflexivity.
+Defined.
+
+Instance prodRightApplicative : forall {L} {M : Monoid L}, Applicative (prod L) :=
+    {   fapp := fun _ _ tf tx =>
+                  match tf with
+                  | (lf, f) =>
+                    match tx with
+                    | (lx, x) => (add lf lx, f x)
+                    end
+                  end
+    }.
+Proof.
+  simpl; intros a x; destruct x; rewrite monoid_e_l; reflexivity.
+  simpl; intros; rewrite monoid_e_l; reflexivity.
+  simpl; intros a b c u v w; destruct u; destruct v; destruct w;
+    rewrite monoid_e_l; rewrite monoid_assoc; reflexivity.
+  simpl; intros a b g x; destruct x; rewrite monoid_e_l; reflexivity.
+Defined.

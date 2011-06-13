@@ -3,7 +3,7 @@
 CoqMakeVars :=
 	#COQDOC = "~/bin/coqdoc -s"
 
-CLASSES := Cat Functor Pointed Applicative Monad
+CLASSES := Cat Monoid Functor Pointed Applicative Monad
 Vm := $(CLASSES:%=Classes/%)
 Vs := $(Vm:%=%.v)
 

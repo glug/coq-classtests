@@ -2,6 +2,7 @@
 (* vim: set tw=78 ts=2 et syn=coq fdm=marker fmr={{{,}}} : *)
 
 Require Import Classes.Cat.
+Require Import Classes.Monoid.
 Require Import Classes.Functor.
 
 (** * The Pointed Functor Class **)
@@ -37,15 +38,25 @@ Instance listPointed : Pointed list :=
     }.
 
 (** * Usage Example
-[[*)
+[[
  Definition foo (F : Type -> Type)  {FF : Functor F} {P : Pointed F} := (plus 1) <$> (pure 3).
  Eval compute in foo list. (* -> [4] *)
  Eval compute in foo (FUN bool). (* -> fun (_ : bool) -> 4 *)
-
-(*
- -> [4]
 ]]
 **)
 
-(* sum l/r, prod l/r do not work yet... FIXME *)
+Instance sumLeftPointed : forall {R}, Pointed (fun L => sum L R) :=
+    {   pure := (fun L => @inl L R)
+    }.
 
+Instance sumRightPointed : forall {L}, Pointed (sum L) :=
+    {   pure := @inr L
+    }.
+
+Instance prodLeftPointed : forall {R} {M : Monoid R}, Pointed (fun L => prod L R) :=
+    {   pure := fun _ x => (x, e)
+    }.
+
+Instance prodRightPointed : forall {L} {M : Monoid L}, Pointed (prod L) :=
+    {   pure := fun _ x => (e, x)
+    }.

@@ -4,6 +4,7 @@
 Require Import Coq.Lists.List.
 
 Require Import Classes.Cat.
+Require Import Classes.Monoid.
 Require Import Classes.Functor.
 Require Import Classes.Pointed.
 Require Import Classes.Applicative.
@@ -81,6 +82,64 @@ Proof.
       rewrite IHxs; rewrite app_assoc; reflexivity.
 Defined.
 
+Instance sumLeftMonad : forall {R}, Monad (fun L => sum L R) :=
+    {   join := fun _ mmx =>
+                  match mmx with
+                  | inl mx => mx
+                  | inr v  => inr v
+                  end
+    }.
+Proof.
+  intros; extensionality x; reflexivity.
+  intros; extensionality x; destruct x; reflexivity.
+  intros; extensionality x; destruct x; reflexivity.
+Defined.
+
+Instance sumRightMonad : forall {L}, Monad (sum L) :=
+    {   join := fun _ mmx =>
+                  match mmx with
+                  | inr mx => mx
+                  | inl v  => inl v
+                  end
+    }.
+Proof.
+  intros; extensionality x; reflexivity.
+  intros; extensionality x; destruct x; reflexivity.
+  intros; extensionality x; destruct x; reflexivity.
+Defined.
+
+Instance prodLeftMonad : forall {R} {M : Monoid R}, Monad (fun L => prod L R) :=
+    {   join := fun _ mmx =>
+                  match mmx with
+                  | (mx, r) =>
+                    match mx with
+                    | (x, r2) => (x, add r r2)
+                    end
+                  end
+    }.
+Proof.
+  intros; extensionality x; destruct x; simpl; rewrite monoid_e_l; reflexivity.
+  intros; extensionality x; destruct x; simpl; rewrite monoid_e_r; reflexivity.
+  intros; extensionality x; destruct x; simpl; repeat destruct p; simpl;
+    rewrite monoid_assoc; reflexivity.
+Defined.
+
+Instance prodRightMonad : forall {L} {M : Monoid L}, Monad (prod L) :=
+    {   join := fun _ mmx =>
+                  match mmx with
+                  | (l, mx) =>
+                    match mx with
+                    | (l2, x) => (add l l2, x)
+                    end
+                  end
+    }.
+Proof.
+  intros; extensionality x; destruct x; simpl; rewrite monoid_e_l; reflexivity.
+  intros; extensionality x; destruct x; simpl; rewrite monoid_e_r; reflexivity.
+  intros; extensionality x; destruct x; simpl; repeat destruct p; simpl;
+    rewrite monoid_assoc; reflexivity.
+Defined.
+
 (* Continuation monad *)
 
 Definition Cont (r a : Type) := (a -> r) -> r.
@@ -118,7 +177,4 @@ Proof.
   reflexivity.
   reflexivity.
   reflexivity.
-Qed.
-
-
-(* TODO sum, prod *)
+Defined.
