@@ -8,6 +8,10 @@ Require Export Coq.Logic.FunctionalExtensionality.
 Definition flip {a b c : Type} (f : a -> b -> c) :=
   fun x y => f y x.
 
+Notation "f $ x" := (f x) (at level 0, only parsing).
+Notation "f $" := (f) (at level 0, only parsing).
+Notation "$ x" := (fun f => f x) (at level 0, only parsing).
+
 (** * Category Class **)
 
 Class Cat (cat : Type -> Type -> Type) :=

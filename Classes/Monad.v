@@ -81,4 +81,50 @@ Proof.
       rewrite IHxs; rewrite app_assoc; reflexivity.
 Defined.
 
+(* Continuation monad *)
+
+Definition Cont (r a : Type) := (a -> r) -> r.
+
+Instance contFunctor : forall {r}, Functor (Cont r) :=
+    {   fmap := fun _ _ f m =>
+                  fun c => m (fun x => c (f x))
+    }.
+Proof.
+  reflexivity.
+  reflexivity.
+Defined.
+
+Instance contPointed : forall {r}, Pointed (Cont r) :=
+    {   pure := fun _ x => ($ x)
+    }.
+
+(* halp! *)
+Program Instance contApplicative : forall {r}, Applicative (Cont r) :=
+    {   fapp := fun _ _ mf mx => _
+    }.
+Next Obligation.
+  intros.
+  refine (fun c => _).
+  refine (_ (fun x => x c)).
+  refine (fun d => mf _).
+  refine (fun x => _).
+  apply d.
+  refine (_ x).
+  refine (fun f g => _).
+  refine (_ (fun x => g x)).
+  refine (fun h => mx _).
+  refine (fun x => h (f x)).
+Defined.
+Solve Obligations using reflexivity.
+
+Instance contMonad : forall {r}, Monad (Cont r) :=
+    {   join := fun _ m c => m (fun x => x c)
+    }.
+Proof.
+  reflexivity.
+  reflexivity.
+  reflexivity.
+Qed.
+
+
 (* TODO sum, prod *)
