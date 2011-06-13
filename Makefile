@@ -4,7 +4,8 @@ CoqMakeVars :=
 	#COQDOC = "~/bin/coqdoc -s"
 
 CLASSES := Cat Monoid Functor Pointed Applicative Monad
-Vm := $(CLASSES:%=Classes/%)
+INSTANCES := Cont
+Vm := $(CLASSES:%=Classes/%) $(INSTANCES:%=Instances/%)
 Vs := $(Vm:%=%.v)
 
 all: allcoq deps.png coq.html
@@ -22,10 +23,10 @@ clean:
 	-make -f Makefile.coq clean
 	-rm Makefile.coq
 
-coq.html: $(VS) Makefile.coq
+coq.html: $(Vs) Makefile.coq
 	make -f Makefile.coq html
 	cp coqdoc.css html/
 
-coq.pdf: $(VS) Makefile.coq
+coq.pdf: $(Vs) Makefile.coq
 	make -f  Makefile.coq all.pdf
 
