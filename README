@@ -1,0 +1,8 @@
+This will hopefully become a structured implementation of some 
+categorical concepts that are useful from a programming perspective.
+
+Type classes with instances for most Coq default data types are in 
+Classes/, instances for new data types are in Instances/.
+
+(Coq default data types are option, sum, prod, list and function.)
+
