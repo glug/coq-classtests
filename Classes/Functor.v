@@ -3,14 +3,18 @@
 
 Require Import Coq.Lists.List.
 
+Require Import Classes.Cat.
+
 (** * The Functor Class **)
 
 Class Functor (F : Type -> Type) :=
     {   fmap : forall {a b : Type} (f : a -> b), F a -> F b
-    ;   fmap_id   : forall {a : Type} (v : F a), fmap (@id a) v = (@id (F a)) v
+    ;   fmap_id   : forall {a : Type}, fmap (identity a) = identity (F a)
     ;   fmap_lift : forall {a b c : Type} (h : b -> c) (g : a -> b) (v : F a),
-                      fmap h (fmap g v) = fmap (fun x => h (g x)) v
+                      (fmap h ∘ fmap g) v = fmap (h ∘ g) v
     }.
+
+Notation "f <$> x" := (fmap f x) (at level 40, only parsing).
 
 (** * Base Instances **)
 
@@ -24,7 +28,7 @@ Instance optionFunctor : Functor option :=
                   end
     }.
 Proof.
-  destruct 0; reflexivity.
+  simpl; intros; extensionality x; destruct x; reflexivity.
   destruct 0; reflexivity.
 Defined.
 
@@ -38,7 +42,7 @@ Instance sumLeftFunctor : forall b, Functor (fun a => sum a b) :=
                   end
     }.
 Proof.
-  destruct 0; reflexivity.
+  simpl; intros; extensionality x; destruct x; reflexivity.
   destruct 0; reflexivity.
 Defined.
 
@@ -50,7 +54,7 @@ Instance sumRightFunctor : forall a, Functor (sum a) :=
                   end
     }.
 Proof.
-  destruct 0; reflexivity.
+  simpl; intros; extensionality x; destruct x; reflexivity.
   destruct 0; reflexivity.
 Defined.
 
@@ -63,7 +67,7 @@ Instance prodLeftFunctor : forall b, Functor (fun a => a * b)%type :=
                   end
     }.
 Proof.
-  destruct 0; reflexivity.
+  simpl; intros; extensionality x; destruct x; reflexivity.
   destruct 0; reflexivity.
 Defined.
 
@@ -74,13 +78,13 @@ Instance prodRightFunctor : forall a, Functor (prod a) :=
                   end
     }.
 Proof.
-  destruct 0; reflexivity.
+  simpl; intros; extensionality x; destruct x; reflexivity.
   destruct 0; reflexivity.
 Defined.
 
 (** ** functions from a fixed type are a functor **)
 
-Instance funFunctor : forall e, Functor (fun a => e -> a) :=
+Instance funFunctor : forall e, Functor (FUN e) :=
     {   fmap := fun _ _ f g => fun x => f (g x)
     }.
 Proof.
@@ -94,10 +98,12 @@ Instance listFunctor : Functor list :=
     {   fmap := List.map
     }.
 Proof.
-  induction 0 as [| x xs IHxs]; simpl;
+  simpl; intro a; extensionality x;
+  induction x as [| x xs IHxs]; simpl;
     try rewrite IHxs;
     reflexivity.
-  induction 0 as [| x xs IHxs]; simpl;
+  simpl; intros;
+  induction v as [| x xs IHxs]; simpl;
     f_equal;
     try rewrite <- IHxs;
     reflexivity.

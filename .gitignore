@@ -1,0 +1,8 @@
+*~
+*.glob
+*.vo
+*.v.d
+html/*
+Makefile.coq
+Makefile-*
+deps.png

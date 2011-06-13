@@ -1,18 +1,22 @@
 .PHONY: all clean allcoq coq.html coq.pdf
 
-CoqMakeVars := COQDOC = "~/bin/coqdoc -s"
+CoqMakeVars :=
+	#COQDOC = "~/bin/coqdoc -s"
 
-CLASSES := Functor Pointed
+CLASSES := Cat Functor Pointed Applicative Monad
 Vm := $(CLASSES:%=Classes/%)
 Vs := $(Vm:%=%.v)
 
-all: allcoq
+all: allcoq deps.png coq.html
 
 Makefile.coq: Makefile $(Vs)
 	coq_makefile $(CoqMakeVars) -R Classes Classes $(Vs) -o Makefile.coq
 
 allcoq: Makefile.coq $(Vs)
 	make -f Makefile.coq all
+
+deps.png: deps.dot
+	dot -Tpng deps.dot > deps.png
 
 clean:
 	-make -f Makefile.coq clean

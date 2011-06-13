@@ -3,11 +3,10 @@
 digraph TypeClasses {
 
     node [shape="box"];
+    /* missing */
     node [color="#ff0000"];
     Comonad;
-    Applicative;
     Monoid;
-    Category;
     Alternative;
     Foldable;
     Arrow;
@@ -18,13 +17,18 @@ digraph TypeClasses {
     MonadPlus;
     ArrowChoice;
     ArrowLoop;
-    Monad;
     ArrowApply;
+    /* partially done */
     node [color="#800000"];
+    Category;
     Pointed;
+    Applicative;
+    Monad;
+    /* done */
     node [color="black"];
     Functor;
 
+    /* deps */
     Functor -> Pointed;
     Functor -> Comonad;
     Functor -> Traversable;
