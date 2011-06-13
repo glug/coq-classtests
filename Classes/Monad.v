@@ -86,8 +86,8 @@ Defined.
 Definition Cont (r a : Type) := (a -> r) -> r.
 
 Instance contFunctor : forall {r}, Functor (Cont r) :=
-    {   fmap := fun _ _ f m =>
-                  fun c => m (fun x => c (f x))
+    {   fmap := fun _ _ f cx cont =>
+                  cx (fun x => cont (f x))
     }.
 Proof.
   reflexivity.
@@ -95,30 +95,24 @@ Proof.
 Defined.
 
 Instance contPointed : forall {r}, Pointed (Cont r) :=
-    {   pure := fun _ x => ($ x)
+    {   pure := fun _ x cont => (cont x)
     }.
 
-(* halp! *)
-Program Instance contApplicative : forall {r}, Applicative (Cont r) :=
-    {   fapp := fun _ _ mf mx => _
+Instance contApplicative : forall {r}, Applicative (Cont r) :=
+    {   fapp := fun _ _ cf cx cont =>
+                  cf (fun f =>
+                    cx (fun x =>
+                      cont (f x)))
     }.
-Next Obligation.
-  intros.
-  refine (fun c => _).
-  refine (_ (fun x => x c)).
-  refine (fun d => mf _).
-  refine (fun x => _).
-  apply d.
-  refine (_ x).
-  refine (fun f g => _).
-  refine (_ (fun x => g x)).
-  refine (fun h => mx _).
-  refine (fun x => h (f x)).
+Proof.
+  reflexivity.
+  reflexivity.
+  reflexivity.
+  reflexivity.
 Defined.
-Solve Obligations using reflexivity.
 
 Instance contMonad : forall {r}, Monad (Cont r) :=
-    {   join := fun _ m c => m (fun x => x c)
+    {   join := fun _ ccx cont => ccx (fun cx => cx cont )
     }.
 Proof.
   reflexivity.
