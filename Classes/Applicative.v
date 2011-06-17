@@ -126,7 +126,7 @@ Instance prodLeftApplicative : forall {R} {M : Monoid R}, Applicative (fun L => 
                   match tf with
                   | (f, rf) =>
                     match tx with
-                    | (x, rx) => (f x, add rf rx)
+                    | (x, rx) => (f x, mappend rf rx)
                     end
                   end
     }.
@@ -143,7 +143,7 @@ Instance prodRightApplicative : forall {L} {M : Monoid L}, Applicative (prod L) 
                   match tf with
                   | (lf, f) =>
                     match tx with
-                    | (lx, x) => (add lf lx, f x)
+                    | (lx, x) => (mappend lf lx, f x)
                     end
                   end
     }.

@@ -113,7 +113,7 @@ Instance prodLeftMonad : forall {R} {M : Monoid R}, Monad (fun L => prod L R) :=
                   match mmx with
                   | (mx, r) =>
                     match mx with
-                    | (x, r2) => (x, add r r2)
+                    | (x, r2) => (x, mappend r r2)
                     end
                   end
     }.
@@ -129,7 +129,7 @@ Instance prodRightMonad : forall {L} {M : Monoid L}, Monad (prod L) :=
                   match mmx with
                   | (l, mx) =>
                     match mx with
-                    | (l2, x) => (add l l2, x)
+                    | (l2, x) => (mappend l l2, x)
                     end
                   end
     }.

@@ -54,9 +54,9 @@ Instance sumRightPointed : forall {L}, Pointed (sum L) :=
     }.
 
 Instance prodLeftPointed : forall {R} {M : Monoid R}, Pointed (fun L => prod L R) :=
-    {   pure := fun _ x => (x, e)
+    {   pure := fun _ x => (x, mempty)
     }.
 
 Instance prodRightPointed : forall {L} {M : Monoid L}, Pointed (prod L) :=
-    {   pure := fun _ x => (e, x)
+    {   pure := fun _ x => (mempty, x)
     }.

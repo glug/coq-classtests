@@ -9,18 +9,22 @@ Require Import Classes.Cat.
 (** * Monoid Class **)
 
 Class Monoid (A : Type) :=
-    {   e   : A
-    ;   add : A -> A -> A
-    ;   monoid_e_l : forall a, add e a = a
-    ;   monoid_e_r : forall a, add a e = a
-    ;   monoid_assoc : forall a b c, add a (add b c) = add (add a b) c
+    {   mempty  : A
+    ;   mappend : A -> A -> A
+    ;   monoid_e_l : forall a, mappend mempty a = a
+    ;   monoid_e_r : forall a, mappend a mempty = a
+    ;   monoid_assoc : forall a b c,
+                mappend a (mappend b c) = mappend (mappend a b) c
     }.
+
+Definition monoid_concat {a : Type} {M : Monoid a} : list a -> a :=
+  fold_right mappend mempty.
 
 (** * Some Instances **)
 
 Instance natPlusMonoid : Monoid nat :=
-    { e   := 0
-    ; add := plus
+    {   mempty  := 0
+    ;   mappend := plus
     }.
 Proof.
   apply plus_O_n.
@@ -29,8 +33,8 @@ Proof.
 Defined.
 
 Instance natMultMonoid : Monoid nat :=
-    { e   := 1
-    ; add := mult
+    {   mempty  := 1
+    ;   mappend := mult
     }.
 Proof.
   apply mult_1_l.
@@ -38,9 +42,9 @@ Proof.
   apply mult_assoc.
 Defined.
 
-Instance listConcMonoid : forall {a}, Monoid (list a) :=
-    { e   := nil
-    ; add := @app a
+Instance listAppMonoid : forall {a}, Monoid (list a) :=
+    {   mempty  := nil
+    ;   mappend := @app a
     }.
 Proof.
   apply app_nil_l.
@@ -48,8 +52,28 @@ Proof.
   apply app_assoc.
 Defined.
 
+Instance endoMonoid : forall {a}, Monoid (FUN a a) :=
+    {   mempty  := identity a
+    ;   mappend := compose
+    }.
+Proof.
+  reflexivity.
+  reflexivity.
+  reflexivity.
+Defined.
 
+(** * Derived Instances **)
 
+Instance funMonoid : forall {e a} {M : Monoid a}, Monoid (FUN e a) :=
+    {   mempty  := fun _ => mempty
+    ;   mappend := fun g h =>
+                      fun x => mappend (g x) (h x)
+    }.
+Proof.
+  simpl; intros; extensionality x; rewrite monoid_e_l; reflexivity.
+  simpl; intros; extensionality x; rewrite monoid_e_r; reflexivity.
+  simpl; intros; extensionality x; rewrite monoid_assoc; reflexivity.
+Defined.
 
 
 
