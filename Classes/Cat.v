@@ -8,9 +8,10 @@ Require Export Coq.Logic.FunctionalExtensionality.
 Definition flip {a b c : Type} (f : a -> b -> c) :=
   fun x y => f y x.
 
-Notation "f $ x" := (f x) (at level 0, only parsing).
-Notation "f $" := (f) (at level 0, only parsing).
-Notation "$ x" := (fun f => f x) (at level 0, only parsing).
+(* The dollar notation from Haskell.  Note that using multiple $ in the same
+   expression will not work.  Use function composition instead. *)
+Notation "$ x" := (fun f => f x) (at level 0, right associativity, only parsing).
+Notation "f $ x .. y" := (.. (f x) .. y) (at level 0, right associativity, only parsing).
 
 (** * Category Class **)
 
@@ -27,15 +28,21 @@ Class Cat (cat : Type -> Type -> Type) :=
           compose (compose r q) p = compose r (compose q p)
     }.
 
-(* this one is technically wrong but easier to type on Linux:
+(* Function composition in Haskell is a dot '.', but we can't use that
+   here... We can't use ',', ';', ':', '_', ... here either, meaning no
+   sensible ASCII character is available.  But we'd still like a concise
+   notation.
+   So once, and only once, AUSNAHMSWEISE we'll use a unicode character
+   for this.  Actually, two notations:
+   This one is technically wrong but easier to type on Linux:
    compose ^ .  --> ·
-   (is a mid-dot, not a dot operator or function composition symbol)
+   (it is a mid-dot, not a dot operator or function composition symbol)
 *)
 Notation "g · f" := (compose g f) (at level 70, only parsing).
 Notation "g ·" := (compose g) (at level 70, only parsing).
 Notation "· f" := (flip compose f) (at level 70, only parsing).
 
-(* this one is correct but harder to type *)
+(* this one is correct (function composition symbol), but harder to type *)
 
 Notation "g ∘" := (compose g) (at level 70).
 Notation "∘ f" := (flip compose f) (at level 70).
